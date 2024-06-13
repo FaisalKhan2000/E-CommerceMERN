@@ -7,6 +7,7 @@ import {
   getSingleProduct,
   updateProduct,
   deleteProduct,
+  getAllProducts,
 } from "../controllers/product.js";
 import { singleUpload } from "../middlewares/multer.js";
 import { adminOnly } from "../middlewares/auth.js";
@@ -14,6 +15,9 @@ const router = express.Router();
 
 // To Create New Product - api/v1/product/new
 router.route("/new").post(adminOnly, singleUpload, newProduct);
+
+// To get all Products with filters - api/v1/product/all
+router.route("/all").get(getAllProducts);
 
 // To get last 5 Product - api/v1/product/latest
 router.route("/latest").get(getLatestProducts);

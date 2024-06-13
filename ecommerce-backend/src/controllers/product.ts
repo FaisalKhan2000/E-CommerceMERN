@@ -1,9 +1,16 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
-import { NewProductRequestBody } from "../types/types.js";
+import {
+  BaseQueryType,
+  NewProductRequestBody,
+  SearchRequestQuery,
+  SortKeyType,
+} from "../types/types.js";
 import { Product } from "../models/product.js";
 import { BadRequestError, NotFoundError } from "../utils/customError.js";
 import { rm } from "fs";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const newProduct = async (
   req: Request<{}, {}, NewProductRequestBody>,
@@ -144,5 +151,65 @@ export const deleteProduct = async (
   return res.status(StatusCodes.OK).json({
     success: true,
     message: "Product Deleted Successfully",
+  });
+};
+
+export const getAllProducts = async (
+  req: Request<{}, {}, {}, SearchRequestQuery>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { search, sort, category, price } = req.query;
+
+  const page = Number(req.query.page) || 1;
+
+  const limit = Number(process.env.PRODUCT_PER_PAGE) || 8;
+
+  const skip = limit * (page - 1);
+
+  // baseQuery
+  const baseQuery: BaseQueryType = {};
+
+  if (search)
+    baseQuery.name = {
+      $regex: search,
+      $options: "i", // case sensitive
+    };
+
+  if (price) baseQuery.price = { $lte: Number(price) };
+
+  if (category) baseQuery.category = category;
+
+  const sortOptions: { [key: string]: SortKeyType } = {
+    newest: "-createdAt",
+    oldest: "createdAt",
+    asc: "price",
+    desc: "-price",
+  };
+
+  const sortKey: SortKeyType = sort ? sortOptions[sort] : sortOptions.newest;
+
+  // using this to increase  performance
+  const [products, filteredOnlyProduct] = await Promise.all([
+    await Product.find(baseQuery).sort(sortKey).limit(limit).skip(skip),
+
+    await Product.find(baseQuery),
+  ]);
+
+  // const products = await Product.find(baseQuery)
+  //   .sort(sortKey)
+  //   .limit(limit)
+  //   .skip(skip);
+
+  // // using this to get the length of filtered products
+  // const filteredOnlyProduct = await Product.find(baseQuery);
+
+  const totalPage = Math.ceil(filteredOnlyProduct.length / limit);
+
+  return res.status(StatusCodes.OK).json({
+    success: true,
+    products,
+    page,
+    totalPage,
   });
 };

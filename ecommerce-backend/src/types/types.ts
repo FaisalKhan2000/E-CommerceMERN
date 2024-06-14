@@ -34,3 +34,9 @@ export type BaseQueryType = {
 };
 
 export type SortKeyType = "-createdAt" | "createdAt" | "price" | "-price";
+
+export type InvalidateCacheProps = {
+  product?: boolean;
+  order?: boolean;
+  admin?: boolean;
+};

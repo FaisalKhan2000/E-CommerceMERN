@@ -4,6 +4,7 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 dotenv.config();
+import NodeCache from "node-cache";
 
 // Importing Routes
 import userRoute from "./routes/user.js";
@@ -16,6 +17,9 @@ const app = express();
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
+
+// initialize node cache
+export const myCache = new NodeCache();
 
 // middlewares
 app.use(express.json());

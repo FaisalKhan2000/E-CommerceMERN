@@ -13,9 +13,10 @@ export const errorMiddleware = (
   // Check if error is a custom error with statusCode property
   if (error instanceof MyCustomError) {
     statusCode = error.statusCode;
-  } else {
-    // Handle errors that are not your custom errors (e.g., programming errors)
-    console.error(error.stack); // Log the error for debugging
+  }
+
+  if (error.name === "CastError") {
+    error.message = "Invalid ID";
   }
 
   const message = error.message || "Something went wrong, try again later";

@@ -1,4 +1,5 @@
 import { myCache } from "../app.js";
+import { Order } from "../models/order.js";
 import { Product } from "../models/product.js";
 import { InvalidateCacheProps, OrderItemType } from "../types/types.js";
 import { NotFoundError } from "./customError.js";
@@ -7,25 +8,31 @@ export const invalidateCache = async ({
   product,
   order,
   admin,
+  userId,
+  orderId,
+  productId,
 }: InvalidateCacheProps) => {
   if (product) {
-    const productKeys: Array<string> = [
+    const productKeys: string[] = [
       "latest-products",
       "categories",
       "all-products",
     ];
+    if (typeof productId === "string") productKeys.push(`product-${productId}`);
 
-    const products = await Product.find({}).select("_id");
-
-    products.forEach((i) => {
-      productKeys.push(`product-${i._id}`);
-    });
+    if (typeof productId === "object")
+      productId.forEach((i) => productKeys.push(`product-${i}`));
 
     myCache.del(productKeys);
-
-    // `product-${id}`
   }
   if (order) {
+    const ordersKeys: string[] = [
+      "all-orders",
+      `my-orders-${userId}`,
+      `order-${orderId}`,
+    ];
+
+    myCache.del(ordersKeys);
   }
   if (admin) {
   }

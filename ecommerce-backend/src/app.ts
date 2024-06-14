@@ -1,14 +1,18 @@
 import "express-async-errors";
 import express from "express";
 import morgan from "morgan";
-import dotenv from "dotenv";
+import { config } from "dotenv";
 import mongoose from "mongoose";
-dotenv.config();
 import NodeCache from "node-cache";
+
+config({
+  path: "./.env",
+});
 
 // Importing Routes
 import userRoute from "./routes/user.js";
 import productRoute from "./routes/product.js";
+import orderRoute from "./routes/order.js";
 
 // Importing Middlewares
 import { errorMiddleware } from "./middlewares/error.js";
@@ -32,6 +36,7 @@ app.get("/api/v1", (req, res) => {
 // Using Routes
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/product", productRoute);
+app.use("/api/v1/order", orderRoute);
 
 // making uploads folder static so that it can be used in used directly
 app.use("/uploads", express.static("uploads"));

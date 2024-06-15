@@ -17,6 +17,8 @@ export const getDashboardStats = async (
     stats = JSON.parse(myCache.get("admin-stats") as string);
   } else {
     const today = new Date();
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
     const thisMonth = {
       start: new Date(today.getFullYear(), today.getMonth(), 1),
@@ -82,6 +84,18 @@ export const getDashboardStats = async (
       },
     });
 
+    // last six months orders
+    const lastSixMonthOrdersPromise = await Order.find({
+      createdAt: {
+        $gte: sixMonthsAgo,
+        $lte: today,
+      },
+    });
+
+    const latestTransactionsPromise = Order.find({})
+      .select(["orderItems", "discount", "total", "StatusCodes"])
+      .limit(4);
+
     const [
       thisMonthProducts,
       thisMonthUsers,
@@ -92,6 +106,10 @@ export const getDashboardStats = async (
       productsCount,
       usersCount,
       allOrders,
+      lastSixMonthOrders,
+      categories,
+      femaleUsersCount,
+      latestTransactions,
     ] = await Promise.all([
       thisMonthProductsPromise,
       thisMonthUsersPromise,
@@ -102,6 +120,10 @@ export const getDashboardStats = async (
       Product.countDocuments(),
       User.countDocuments(),
       Order.find({}).select("total"),
+      lastSixMonthOrdersPromise,
+      Product.distinct("category"),
+      User.countDocuments({ gender: "female" }),
+      latestTransactionsPromise,
     ]);
 
     // REVENUE
@@ -140,10 +162,65 @@ export const getDashboardStats = async (
       order: allOrders.length,
     };
 
+    // * ORDER V/S REVENUE CHART
+    const orderMonthCounts = new Array(6).fill(0);
+    const orderMonthlyRevenue = new Array(6).fill(0);
+
+    lastSixMonthOrders.forEach((order) => {
+      const creationDate = new Date(order.createdAt);
+      const yearDiff = today.getFullYear() - creationDate.getFullYear();
+      const monthDiff =
+        yearDiff * 12 + today.getMonth() - creationDate.getMonth();
+
+      // Ensure that the order is within the last 6 months
+      if (monthDiff >= 0 && monthDiff < 6) {
+        orderMonthCounts[5 - monthDiff] += 1;
+        orderMonthlyRevenue[5 - monthDiff] += order.total;
+      }
+    });
+
+    // * category
+    const categoriesCountPromise = categories.map((category) =>
+      Product.countDocuments({ category })
+    );
+
+    const categoriesCount = await Promise.all(categoriesCountPromise);
+
+    const categoryCount: Record<string, number>[] = [];
+
+    categories.forEach((category, i) => {
+      categoryCount.push({
+        [category]: Math.round((categoriesCount[i] / productsCount) * 100),
+      });
+    });
+
+    //* Gender Ratio
+    const userRatio = {
+      male: usersCount - femaleUsersCount,
+      female: femaleUsersCount,
+    };
+
+    const modifiedLatestTransactions = latestTransactions.map((i) => ({
+      _id: i._id,
+      discount: i.discount,
+      amount: i.total,
+      quantity: i.orderItems.length,
+      status: i.status,
+    }));
+
     stats = {
+      categoryCount,
       changePercent,
       count,
+      chart: {
+        order: orderMonthCounts,
+        revenue: orderMonthlyRevenue,
+      },
+      userRatio,
+      latestTransactions: modifiedLatestTransactions,
     };
+
+    myCache.set("admin-stats", JSON.stringify(stats));
   }
 
   return res.status(StatusCodes.OK).json({

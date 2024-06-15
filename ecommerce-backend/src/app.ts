@@ -13,6 +13,7 @@ config({
 import userRoute from "./routes/user.js";
 import productRoute from "./routes/product.js";
 import orderRoute from "./routes/order.js";
+import paymentRoute from "./routes/payment.js";
 
 // Importing Middlewares
 import { errorMiddleware } from "./middlewares/error.js";
@@ -37,6 +38,7 @@ app.get("/api/v1", (req, res) => {
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/product", productRoute);
 app.use("/api/v1/order", orderRoute);
+app.use("/api/v1/payment", paymentRoute);
 
 // making uploads folder static so that it can be used in used directly
 app.use("/uploads", express.static("uploads"));

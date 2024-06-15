@@ -70,3 +70,8 @@ export interface NewOrderRequestBody {
   total: number;
   orderItems: OrderItemType[];
 }
+
+export interface NewCouponRequestBody {
+  code: string;
+  amount: number;
+}

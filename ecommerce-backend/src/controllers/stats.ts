@@ -445,7 +445,7 @@ export const getLineCharts = async (
   next: NextFunction
 ) => {
   let charts;
-  const key = "admin-bar-charts";
+  const key = "admin-line-charts";
 
   if (myCache.has(key)) charts = JSON.parse(myCache.get(key) as string);
   else {

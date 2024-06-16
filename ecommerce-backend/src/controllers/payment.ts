@@ -3,6 +3,28 @@ import { StatusCodes } from "http-status-codes";
 import { NewCouponRequestBody } from "../types/types.js";
 import { Coupon } from "../models/coupon.js";
 import { BadRequestError, NotFoundError } from "../utils/customError.js";
+import { stripe } from "../app.js";
+
+export const createPaymentIntent = async (
+  req: Request<{}, {}, NewCouponRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { amount } = req.body;
+
+  if (!amount) throw new BadRequestError("Please enter amount.");
+
+  // creating payment intent
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: Number(amount) * 100, // amount should be in paise not rupees
+    currency: "inr",
+  });
+
+  return res.status(StatusCodes.CREATED).json({
+    success: true,
+    clientSecret: paymentIntent.client_secret,
+  });
+};
 
 export const newCoupon = async (
   req: Request<{}, {}, NewCouponRequestBody>,

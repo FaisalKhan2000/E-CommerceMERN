@@ -130,7 +130,7 @@ export const newProduct = async (
   });
 
   // clearing cache
-  await invalidateCache({ product: true });
+  invalidateCache({ product: true, admin: true });
 
   return res.status(StatusCodes.CREATED).json({
     success: true,
@@ -168,7 +168,11 @@ export const updateProduct = async (
   await product.save();
 
   // clearing cache
-  await invalidateCache({ product: true, productId: String(product._id) });
+  invalidateCache({
+    product: true,
+    admin: true,
+    productId: String(product._id),
+  });
 
   return res.status(StatusCodes.OK).json({
     success: true,
@@ -195,7 +199,11 @@ export const deleteProduct = async (
   await product.deleteOne();
 
   // clearing cache
-  await invalidateCache({ product: true, productId: String(product._id) });
+  invalidateCache({
+    product: true,
+    admin: true,
+    productId: String(product._id),
+  });
 
   return res.status(StatusCodes.OK).json({
     success: true,

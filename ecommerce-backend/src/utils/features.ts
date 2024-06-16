@@ -5,7 +5,7 @@ import { InvalidateCacheProps, OrderItemType } from "../types/types.js";
 import { NotFoundError } from "./customError.js";
 import { Document } from "mongoose";
 
-export const invalidateCache = async ({
+export const invalidateCache = ({
   product,
   order,
   admin,
@@ -36,6 +36,12 @@ export const invalidateCache = async ({
     myCache.del(ordersKeys);
   }
   if (admin) {
+    myCache.del([
+      "admin-stats",
+      "admin-pie-charts",
+      "admin-bar-charts",
+      "admin-line-charts",
+    ]);
   }
 };
 

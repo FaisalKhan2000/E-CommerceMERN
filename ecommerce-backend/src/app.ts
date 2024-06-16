@@ -4,10 +4,16 @@ import morgan from "morgan";
 import { config } from "dotenv";
 import mongoose from "mongoose";
 import NodeCache from "node-cache";
+import Stripe from "stripe";
 
 config({
   path: "./.env",
 });
+
+const port = process.env.PORT || 4000;
+const mongoUri = process.env.MONGODB_URI || "";
+const node_env = process.env.NODE_ENV || "development";
+const stripeKey = process.env.STRIPE_KEY || "";
 
 // Importing Routes
 import userRoute from "./routes/user.js";
@@ -20,9 +26,12 @@ import dashboardRoute from "./routes/stats.js";
 import { errorMiddleware } from "./middlewares/error.js";
 
 const app = express();
-if (process.env.NODE_ENV === "development") {
+if (node_env === "development") {
   app.use(morgan("dev"));
 }
+
+// initialize stripe
+export const stripe = new Stripe(stripeKey);
 
 // initialize node cache
 export const myCache = new NodeCache();
@@ -47,12 +56,8 @@ app.use("/uploads", express.static("uploads"));
 // error middleware
 app.use(errorMiddleware);
 
-const port = process.env.PORT || 8000;
-
 async function startServer() {
   try {
-    // Ensure MONGODB_URI is defined
-    const mongoUri = process.env.MONGODB_URI;
     if (!mongoUri) {
       throw new Error("MONGODB_URI environment variable is not defined");
     }

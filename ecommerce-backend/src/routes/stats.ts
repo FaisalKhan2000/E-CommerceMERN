@@ -5,18 +5,19 @@ import {
   getLineCharts,
   getPieCharts,
 } from "../controllers/stats.js";
+import { adminOnly } from "../middlewares/auth.js";
 const router = express.Router();
 
 // route - /api/v1/dashboard/stats
-router.get("/stats", getDashboardStats);
+router.get("/stats", adminOnly, getDashboardStats);
 
 // route - /api/v1/dashboard/pie
-router.get("/pie", getPieCharts);
+router.get("/pie", adminOnly, getPieCharts);
 
 // route - /api/v1/dashboard/bar
-router.get("/bar", getBarCharts);
+router.get("/bar", adminOnly, getBarCharts);
 
 // route - /api/v1/dashboard/line
-router.get("/line", getLineCharts);
+router.get("/line", adminOnly, getLineCharts);
 
 export default router;

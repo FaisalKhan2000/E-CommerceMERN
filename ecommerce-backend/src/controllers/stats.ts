@@ -4,7 +4,11 @@ import { myCache } from "../app.js";
 import { Product } from "../models/product.js";
 import { User } from "../models/user.js";
 import { Order } from "../models/order.js";
-import { calculatePercentage } from "../utils/features.js";
+import {
+  calculatePercentage,
+  getChartData,
+  getInventories,
+} from "../utils/features.js";
 
 export const getDashboardStats = async (
   req: Request<{}, {}, {}>,
@@ -180,18 +184,23 @@ export const getDashboardStats = async (
     });
 
     // * category
-    const categoriesCountPromise = categories.map((category) =>
-      Product.countDocuments({ category })
-    );
+    // const categoriesCountPromise = categories.map((category) =>
+    //   Product.countDocuments({ category })
+    // );
 
-    const categoriesCount = await Promise.all(categoriesCountPromise);
+    // const categoriesCount = await Promise.all(categoriesCountPromise);
 
-    const categoryCount: Record<string, number>[] = [];
+    // const categoryCount: Record<string, number>[] = [];
 
-    categories.forEach((category, i) => {
-      categoryCount.push({
-        [category]: Math.round((categoriesCount[i] / productsCount) * 100),
-      });
+    // categories.forEach((category, i) => {
+    //   categoryCount.push({
+    //     [category]: Math.round((categoriesCount[i] / productsCount) * 100),
+    //   });
+    // });
+
+    const categoryCount = await getInventories({
+      categories,
+      productsCount,
     });
 
     //* Gender Ratio
@@ -280,18 +289,23 @@ export const getPieCharts = async (
     };
 
     // category
-    const categoriesCountPromise = categories.map((category) =>
-      Product.countDocuments({ category })
-    );
+    // const categoriesCountPromise = categories.map((category) =>
+    //   Product.countDocuments({ category })
+    // );
 
-    const categoriesCount = await Promise.all(categoriesCountPromise);
+    // const categoriesCount = await Promise.all(categoriesCountPromise);
 
-    const categoryCount: Record<string, number>[] = [];
+    // const categoryCount: Record<string, number>[] = [];
 
-    categories.forEach((category, i) => {
-      categoryCount.push({
-        [category]: Math.round((categoriesCount[i] / productsCount) * 100),
-      });
+    // categories.forEach((category, i) => {
+    //   categoryCount.push({
+    //     [category]: Math.round((categoriesCount[i] / productsCount) * 100),
+    //   });
+    // });
+
+    const productCategories = await getInventories({
+      categories,
+      productsCount,
     });
 
     const stockAvailability = {
@@ -345,7 +359,7 @@ export const getPieCharts = async (
 
     charts = {
       orderFulfillment,
-      productCategories: categoryCount,
+      productCategories,
       stockAvailability,
       revenueDistribution,
       usersAgeGroup,
@@ -366,8 +380,62 @@ export const getBarCharts = async (
   res: Response,
   next: NextFunction
 ) => {
+  let charts;
+  const key = "admin-bar-charts";
+
+  if (myCache.has(key)) charts = JSON.parse(myCache.get(key) as string);
+  else {
+    const today = new Date();
+
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+    const twelveMonthsAgo = new Date();
+    twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
+
+    const sixMonthProductPromise = Product.find({
+      createdAt: {
+        $gte: sixMonthsAgo,
+        $lte: today,
+      },
+    }).select("createdAt");
+
+    const sixMonthUsersPromise = User.find({
+      createdAt: {
+        $gte: sixMonthsAgo,
+        $lte: today,
+      },
+    }).select("createdAt");
+
+    const twelveMonthOrdersPromise = Order.find({
+      createdAt: {
+        $gte: twelveMonthsAgo,
+        $lte: today,
+      },
+    }).select("createdAt");
+
+    const [products, users, orders] = await Promise.all([
+      sixMonthProductPromise,
+      sixMonthUsersPromise,
+      twelveMonthOrdersPromise,
+    ]);
+
+    const productsCounts = getChartData({ length: 6, today, docArr: products });
+    const usersCounts = getChartData({ length: 6, today, docArr: users });
+    const ordersCounts = getChartData({ length: 12, today, docArr: orders });
+
+    charts = {
+      users: usersCounts,
+      products: productsCounts,
+      orders: ordersCounts,
+    };
+
+    myCache.set(key, JSON.stringify(charts));
+  }
+
   return res.status(StatusCodes.OK).json({
     success: true,
+    charts,
   });
 };
 
@@ -376,7 +444,76 @@ export const getLineCharts = async (
   res: Response,
   next: NextFunction
 ) => {
+  let charts;
+  const key = "admin-bar-charts";
+
+  if (myCache.has(key)) charts = JSON.parse(myCache.get(key) as string);
+  else {
+    const today = new Date();
+
+    const twelveMonthsAgo = new Date();
+    twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
+
+    const twelveMonthProductPromise = Product.find({
+      createdAt: {
+        $gte: twelveMonthsAgo,
+        $lte: today,
+      },
+    }).select("createdAt");
+
+    const twelveMonthUsersPromise = User.find({
+      createdAt: {
+        $gte: twelveMonthsAgo,
+        $lte: today,
+      },
+    }).select("createdAt");
+
+    const twelveMonthOrdersPromise = Order.find({
+      createdAt: {
+        $gte: twelveMonthsAgo,
+        $lte: today,
+      },
+    }).select(["createdAt", "discount", "total"]);
+
+    const [products, users, orders] = await Promise.all([
+      twelveMonthProductPromise,
+      twelveMonthUsersPromise,
+      twelveMonthOrdersPromise,
+    ]);
+
+    const productsCounts = getChartData({
+      length: 12,
+      today,
+      docArr: products,
+    });
+    const usersCounts = getChartData({ length: 12, today, docArr: users });
+
+    const discount = getChartData({
+      length: 12,
+      today,
+      docArr: orders,
+      property: "discount",
+    });
+
+    const revenue = getChartData({
+      length: 12,
+      today,
+      docArr: orders,
+      property: "total",
+    });
+
+    charts = {
+      users: usersCounts,
+      products: productsCounts,
+      discount,
+      revenue,
+    };
+
+    myCache.set(key, JSON.stringify(charts));
+  }
+
   return res.status(StatusCodes.OK).json({
     success: true,
+    charts,
   });
 };

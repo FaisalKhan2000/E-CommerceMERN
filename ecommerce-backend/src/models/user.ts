@@ -11,7 +11,7 @@ interface IUser extends Document {
   dob: Date;
   createdAt: Date;
   updatedAt: Date;
-  //   Virtual Attribute
+  //   Virtual Attribute -
   age: number;
 }
 

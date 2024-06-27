@@ -1,0 +1,570 @@
+.dashboard {
+  overflow-y: auto;
+}
+.dashboard .bar {
+  height: 4rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: unset;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.37);
+}
+.dashboard .bar > input {
+  margin-right: auto;
+  padding: 1rem 0;
+  border: none;
+  background-color: inherit;
+  width: 100%;
+  outline: none;
+}
+.dashboard .bar > svg {
+  font-size: 1.2rem;
+  opacity: 0.7;
+}
+.dashboard .bar > img {
+  height: 2rem;
+  width: 2rem;
+  border-radius: 50%;
+}
+.dashboard .widget-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 2rem;
+  padding: 2rem 2rem 2rem 0;
+}
+.dashboard .widget-container .widget {
+  min-width: 16rem;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.132);
+  padding: 2rem;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 0rem;
+}
+.dashboard .widget-container .widget .widget-info > p {
+  opacity: 0.7;
+  font-size: 0.8rem;
+}
+.dashboard .widget-container .widget .widget-info > h4 {
+  font-size: 1.5rem;
+}
+.dashboard .widget-container .widget .widget-info > span {
+  display: flex;
+  flex-direction: row;
+  justify-content: unset;
+  align-items: center;
+  gap: 0.2rem;
+}
+.dashboard .widget-container .widget .widget-circle {
+  position: relative;
+  height: 5rem;
+  width: 5rem;
+  border-radius: 50%;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background-color: aqua;
+}
+.dashboard .widget-container .widget .widget-circle::before {
+  content: "";
+  position: absolute;
+  height: 4rem;
+  width: 4rem;
+  background-color: white;
+  border-radius: 50%;
+}
+.dashboard .widget-container .widget .widget-circle span {
+  position: relative;
+}
+.dashboard .graph-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: unset;
+  align-items: unset;
+  gap: 2rem;
+  padding: 0 2rem 2rem 0;
+}
+.dashboard .graph-container > div {
+  background-color: white;
+  border-radius: 10px;
+}
+.dashboard .graph-container > .revenue-chart {
+  width: 100%;
+  padding: 1rem 3rem;
+}
+.dashboard .graph-container > .revenue-chart > h2 {
+  letter-spacing: 3px;
+  font-weight: 300;
+  text-transform: uppercase;
+  margin: 1rem 0 2rem 0.25rem;
+  text-align: center;
+}
+.dashboard .graph-container > .dashboard-categories {
+  width: 100%;
+  max-width: 16rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center unset;
+  align-items: 0;
+  gap: 1rem;
+  padding-bottom: 2rem;
+}
+.dashboard .graph-container > .dashboard-categories > h2 {
+  letter-spacing: 3px;
+  font-weight: 300;
+  text-transform: uppercase;
+  margin: 1.5rem 0 2rem 0;
+  text-align: center;
+}
+.dashboard .graph-container > .dashboard-categories > div {
+  overflow-y: auto;
+  padding-left: 0.5rem;
+}
+.dashboard .graph-container > .dashboard-categories .category-item {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+.dashboard .graph-container > .dashboard-categories .category-item > h5 {
+  letter-spacing: 1px;
+  font-weight: 300;
+}
+.dashboard .graph-container > .dashboard-categories .category-item > div {
+  margin-left: auto;
+  width: 6rem;
+  background-color: rgb(217, 217, 217);
+  border-radius: 20px;
+  height: 0.5rem;
+  flex: none;
+}
+.dashboard .graph-container > .dashboard-categories .category-item > div > div {
+  border-radius: 20px;
+  height: 100%;
+}
+.dashboard .graph-container > .dashboard-categories .category-item > span {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.dashboard .transaction-container {
+  display: flex;
+  gap: 2rem;
+  padding: 0 2rem 2rem 0;
+  height: 30rem;
+}
+.dashboard .transaction-container > div {
+  background-color: white;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.132);
+  border-radius: 10px;
+}
+.dashboard .transaction-container .gender-chart {
+  width: 100%;
+  max-width: 20rem;
+  padding: 1rem;
+  position: relative;
+}
+.dashboard .transaction-container .gender-chart > h2 {
+  text-align: center;
+  margin: 1.5rem 0 2rem 0;
+  letter-spacing: 3px;
+  font-weight: 300;
+  text-transform: uppercase;
+}
+.dashboard .transaction-container .gender-chart > p {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  color: rgba(0, 0, 0, 0.634);
+}
+.dashboard .transaction-container .transaction-box {
+  width: 100%;
+  padding: 1rem;
+  overflow-x: auto;
+}
+.dashboard .transaction-container .transaction-box > h2 {
+  margin: 1.5rem 0 0 0;
+  letter-spacing: 3px;
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+.dashboard-product-box {
+  background-color: white;
+  padding: 2rem;
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+}
+
+.create-product-btn {
+  position: fixed;
+  right: 2rem;
+  top: 2rem;
+  height: 2.5rem;
+  width: 2.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  border-radius: 50%;
+  background-color: rgb(201, 9, 9);
+  color: white;
+}
+.create-product-btn:hover {
+  opacity: 0.8;
+}
+
+.search-filter {
+  height: 4rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: unset;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.37);
+}
+.search-filter > input {
+  margin-right: auto;
+  padding: 1rem 0;
+  border: none;
+  background-color: inherit;
+  width: 100%;
+  outline: none;
+}
+
+.product-management {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: unset;
+  gap: 1rem;
+  padding: 4rem;
+}
+.product-management > section {
+  overflow-y: auto;
+  width: 100%;
+  height: 85vh;
+  max-width: 500px;
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.216);
+  background-color: white;
+  padding: 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: unset;
+  align-items: unset;
+  gap: 1rem;
+  position: relative;
+  border-radius: 5px;
+}
+.product-management > section > h2 {
+  letter-spacing: 2px;
+  font-weight: 300;
+  text-transform: uppercase;
+  text-align: center;
+}
+.product-management > section > img {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.product-management > section > strong {
+  font-weight: 300;
+}
+.product-management > section > span {
+  position: absolute;
+  right: 2rem;
+  top: 2rem;
+}
+.product-management > section > p {
+  text-align: center;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.product-management > section > h3 {
+  text-align: center;
+  font-size: 2rem;
+}
+.product-management > article {
+  height: 85vh;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.216);
+}
+.product-management > article > .form {
+  display: flex;
+  flex-direction: column;
+  justify-content: unset;
+  align-items: center;
+  gap: 2rem;
+}
+.product-management > article > .form > h2 {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+.product-management > article > .form > img {
+  height: 5rem;
+  width: 5rem;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 5px;
+}
+.product-management > article > .form > div {
+  width: 100%;
+  position: relative;
+}
+.product-management > article > .form > div > label {
+  position: absolute;
+  left: 0;
+  top: -1.5rem;
+}
+.product-management > article > .form > div > input {
+  padding: 1rem;
+  padding: 1rem;
+  border: 1px solid rgba(13, 13, 13, 0.196);
+  background-color: unset;
+  width: 100%;
+  outline: none;
+  border-radius: 5px;
+}
+.product-management > article > .form > button {
+  padding: 1rem;
+  border: none;
+  color: white;
+  background-color: rgb(5, 107, 224);
+  width: 100%;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.red {
+  color: red;
+}
+
+.purple {
+  color: rgb(47, 0, 255);
+}
+
+.green {
+  color: rgb(0, 195, 0);
+}
+
+.admin-container {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  grid-template-rows: unset;
+  gap: 2rem;
+  height: 100vh;
+  background-color: rgb(247, 247, 247);
+}
+.admin-container > aside {
+  width: 100%;
+  background-color: white;
+  padding: 1rem;
+  z-index: 10;
+  overflow-y: auto;
+}
+.admin-container > aside::-webkit-scrollbar {
+  display: none;
+}
+.admin-container > aside > div {
+  margin: 2rem 1rem;
+}
+.admin-container > aside > div > h5 {
+  letter-spacing: 2px;
+  font-weight: 300;
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin: 1rem 0;
+}
+.admin-container > aside > div > ul {
+  display: flex;
+  flex-direction: column;
+  justify-content: unset;
+  align-items: unset;
+  gap: 0.5rem;
+  list-style: none;
+}
+.admin-container > aside > div > ul > li {
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+}
+.admin-container > aside > div > ul > li a {
+  color: rgba(0, 0, 0, 0.825);
+  display: flex;
+  flex-direction: row;
+  justify-content: unset;
+  align-items: center;
+  gap: 1rem;
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.table th,
+.table td {
+  padding: 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+.table th {
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.6196078431);
+  font-size: 1.1rem;
+  font-weight: 400;
+  padding: 2rem 1rem;
+}
+.table tbody tr {
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.093);
+}
+.table tbody td {
+  padding: 1rem;
+}
+.table tbody td img {
+  width: 4rem;
+  height: 4rem;
+  -o-object-fit: contain;
+     object-fit: contain;
+  border-radius: 10px;
+}
+.table tbody td a {
+  text-decoration: none;
+  background-color: rgba(44, 104, 255, 0.455);
+  color: rgb(44, 104, 255);
+  padding: 0.25rem 0.5rem;
+  border-radius: 10px;
+}
+.table tbody td button {
+  width: 2rem;
+  height: 2rem;
+  font-size: 1.1rem;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: rgb(255, 44, 44);
+}
+.table tbody td button:hover {
+  opacity: 0.6;
+}
+.table tbody td:first-child {
+  border-left: none;
+}
+.table tbody td:last-child {
+  border-right: none;
+}
+
+.table-pagination {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+}
+.table-pagination > button {
+  padding: 0.5rem 1rem;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: rgb(0, 115, 255);
+  color: white;
+}
+.table-pagination > button:disabled {
+  background-color: rgba(0, 115, 255, 0.1);
+  cursor: not-allowed;
+}
+
+#hamburger {
+  display: grid;
+  place-items: center;
+  height: 3rem;
+  width: 3rem;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: rgb(44, 104, 255);
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  font-size: 2rem;
+  background-color: white;
+  border-radius: 50%;
+  z-index: 9;
+}
+
+#close-sidebar {
+  width: 80%;
+  margin: 1rem auto;
+  display: block;
+  padding: 0.75rem;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background-color: rgb(168, 2, 2);
+  color: white;
+  border-radius: 10px;
+}
+
+.loader {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+.loader > div {
+  height: 10rem;
+  width: 10rem;
+  border-radius: 50%;
+  border-top: 1rem solid rgb(43, 43, 43);
+  border-left: 1rem solid rgb(43, 43, 43);
+  border-right: 1rem solid #fff;
+  border-bottom: 1rem solid #fff;
+  animation: loading-animation 0.5s linear infinite;
+}
+
+@keyframes loading-animation {
+  to {
+    transform: rotateZ(360deg);
+  }
+}/*# sourceMappingURL=app.css.map */

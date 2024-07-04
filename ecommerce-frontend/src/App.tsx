@@ -9,6 +9,8 @@ const Search = lazy(() => import("./pages/Search"));
 const Cart = lazy(() => import("./pages/Cart"));
 const Shipping = lazy(() => import("./pages/Shipping"));
 const Login = lazy(() => import("./pages/Login"));
+const Orders = lazy(() => import("./pages/Orders"));
+const OrderDetails = lazy(() => import("./pages/OrderDetails"));
 
 // Importing Admin Routes
 const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
@@ -75,6 +77,24 @@ const router = createBrowserRouter([
       <SuspenseWrapper>
         {/* <Header /> */}
         <Shipping />
+      </SuspenseWrapper>
+    ),
+  },
+  {
+    path: "/orders",
+    element: (
+      <SuspenseWrapper>
+        {/* <Header /> */}
+        <Orders />
+      </SuspenseWrapper>
+    ),
+  },
+  {
+    path: "/order/:id",
+    element: (
+      <SuspenseWrapper>
+        {/* <Header /> */}
+        <OrderDetails />
       </SuspenseWrapper>
     ),
   },

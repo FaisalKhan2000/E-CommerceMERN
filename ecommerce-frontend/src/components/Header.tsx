@@ -8,7 +8,7 @@ import {
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const user = { _id: "123", role: "admin" };
+const user = { _id: "", role: "" };
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -20,7 +20,7 @@ const Header = () => {
   return (
     <nav className="header">
       <Link onClick={() => setIsOpen(false)} to={"/"}>
-        Home
+        HOME
       </Link>
       <Link onClick={() => setIsOpen(false)} to={"/search"}>
         {" "}

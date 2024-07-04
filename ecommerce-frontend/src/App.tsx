@@ -7,6 +7,8 @@ import Header from "./components/Header";
 const Home = lazy(() => import("./pages/Home"));
 const Search = lazy(() => import("./pages/Search"));
 const Cart = lazy(() => import("./pages/Cart"));
+const Shipping = lazy(() => import("./pages/Shipping"));
+const Login = lazy(() => import("./pages/Login"));
 
 // Importing Admin Routes
 const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
@@ -54,6 +56,25 @@ const router = createBrowserRouter([
       <SuspenseWrapper>
         <Header />
         <Cart />
+      </SuspenseWrapper>
+    ),
+  },
+  {
+    path: "/login",
+    element: (
+      <SuspenseWrapper>
+        <Login />
+      </SuspenseWrapper>
+    ),
+  },
+
+  // Logged In User Routes
+  {
+    path: "/shipping",
+    element: (
+      <SuspenseWrapper>
+        {/* <Header /> */}
+        <Shipping />
       </SuspenseWrapper>
     ),
   },

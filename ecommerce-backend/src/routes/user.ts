@@ -15,6 +15,6 @@ router.route("/new").post(newUser);
 router.route("/all").get(adminOnly, getAllUsers);
 
 // route - /api/v1/user/:id
-router.route("/:id").get(adminOnly, getUser).delete(adminOnly, deleteUser);
+router.route("/:id").get(getUser).delete(adminOnly, deleteUser);
 
 export default router;

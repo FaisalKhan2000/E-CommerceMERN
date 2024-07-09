@@ -8,10 +8,15 @@ import {
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const user = { _id: "", role: "" };
+import { useSelector } from "react-redux";
+import { UserReducerInitialState } from "../types/reducer-types";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const { user } = useSelector(
+    (state: { user: UserReducerInitialState }) => state.user
+  );
 
   const logoutHandler = () => {
     setIsOpen(false);

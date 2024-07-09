@@ -3,6 +3,7 @@ import { lazy } from "react";
 import SuspenseWrapper from "./components/SuspenseWrapper";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Header from "./components/Header";
+import { Toaster } from "react-hot-toast";
 
 const Home = lazy(() => import("./pages/Home"));
 const Search = lazy(() => import("./pages/Search"));
@@ -84,7 +85,7 @@ const router = createBrowserRouter([
     path: "/orders",
     element: (
       <SuspenseWrapper>
-        {/* <Header /> */}
+        <Header />
         <Orders />
       </SuspenseWrapper>
     ),
@@ -203,7 +204,12 @@ const router = createBrowserRouter([
   },
 ]);
 const App = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      <Toaster />
+    </>
+  );
 };
 
 export default App;

@@ -5,6 +5,7 @@ import { config } from "dotenv";
 import mongoose from "mongoose";
 import NodeCache from "node-cache";
 import Stripe from "stripe";
+import cors from "cors";
 
 config({
   path: "./.env",
@@ -29,6 +30,8 @@ const app = express();
 if (node_env === "development") {
   app.use(morgan("dev"));
 }
+
+app.use(cors());
 
 // initialize stripe
 export const stripe = new Stripe(stripeKey);

@@ -1,5 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { AllProductsResponse } from "../../types/api-types";
+import {
+  AllProductsResponse,
+  CategoryResponse,
+  MessageResponse,
+  NewProductRequest,
+  SearchProductsRequest,
+  SearchProductsResponse,
+} from "../../types/api-types";
 
 export const productAPI = createApi({
   reducerPath: "productApi",
@@ -10,10 +17,50 @@ export const productAPI = createApi({
     latestProducts: builder.query<AllProductsResponse, string>({
       query: () => `latest`,
     }),
+
     allProducts: builder.query<AllProductsResponse, string>({
       query: (id) => `admin-products?id=${id}`,
+    }),
+
+    categories: builder.query<CategoryResponse, string>({
+      query: () => `categories`,
+    }),
+
+    searchProducts: builder.query<
+      SearchProductsResponse,
+      SearchProductsRequest
+    >({
+      query: ({ price, search, sort, category, page }) => {
+        let baseQuery = `all?search=${search}&page=${page}`;
+
+        if (price) {
+          baseQuery += `&price=${price}`;
+        }
+        if (sort) {
+          baseQuery += `&sort=${sort}`;
+        }
+        if (category) {
+          baseQuery += `&category=${category}`;
+        }
+
+        return baseQuery;
+      },
+    }),
+
+    newProduct: builder.mutation<MessageResponse, NewProductRequest>({
+      query: ({ formData, id }) => ({
+        url: `new?id=${id}`,
+        method: "POST",
+        body: formData,
+      }),
     }),
   }),
 });
 
-export const { useLatestProductsQuery, useAllProductsQuery } = productAPI;
+export const {
+  useLatestProductsQuery,
+  useAllProductsQuery,
+  useCategoriesQuery,
+  useSearchProductsQuery,
+  useNewProductMutation,
+} = productAPI;

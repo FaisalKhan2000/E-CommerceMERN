@@ -17,9 +17,34 @@ export type UserResponse = {
   user: User;
 };
 
+export type CategoryResponse = {
+  success: boolean;
+  categories: string[];
+};
+
 export type AllProductsResponse = {
   success: boolean;
   products: Product[];
+};
+
+export type SearchProductsResponse = {
+  success: boolean;
+  products: Product[];
+  page: number;
+  totalPage: number;
+};
+
+export type SearchProductsRequest = {
+  page: number;
+  price: number;
+  category: string;
+  search: string;
+  sort: string;
+};
+
+export type NewProductRequest = {
+  id: string;
+  formData: FormData;
 };
 
 export type DeleteUserRequest = {

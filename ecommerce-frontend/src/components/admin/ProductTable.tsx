@@ -70,7 +70,7 @@ const ProductTable = () => {
 
   const [rows, setRows] = useState<ProductType[]>([]);
 
-  console.log(rows);
+  // console.log(rows);
   useEffect(() => {
     if (data) {
       setRows(
@@ -180,24 +180,26 @@ const ProductTable = () => {
         </table>
       )}
 
-      <div className="table-pagination">
-        <button
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Prev
-        </button>
-        <span>
-          {" "}
-          {currentPage} of {table.getPageCount()}
-        </span>
-        <button
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </button>
-      </div>
+      {rows.length > 5 && (
+        <div className="table-pagination">
+          <button
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Prev
+          </button>
+          <span>
+            {" "}
+            {currentPage} of {table.getPageCount()}
+          </span>
+          <button
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,8 +1,19 @@
 .dashboard-product-box {
   background-color: white;
   padding: 2rem;
-  overflow-y: auto;
+  overflow: auto;
   @include square(100%);
+
+  > div {
+    height: 4rem;
+    @include flex(row, unset);
+    padding: 0 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.37);
+    > input {
+      margin-right: auto;
+      @include inputStyle(100%, 1rem 0);
+    }
+  }
 }
 
 .create-product-btn {
@@ -18,17 +29,18 @@
     opacity: 0.8;
   }
 }
-
-.search-filter {
-  height: 4rem;
-  @include flex(row, unset);
-  padding: 0 1rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.37);
-
-  > input {
-    margin-right: auto;
-    @include inputStyle(100%, 1rem 0);
-  }
+.product-delete-btn {
+  background-color: rgb(56, 56, 56);
+  color: white;
+  font-size: 1.2rem;
+  @include square(2.5rem);
+  @include flex;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  position: absolute;
+  top: -1.2rem;
+  right: -1.2rem;
 }
 
 .product-management {
@@ -54,7 +66,7 @@
 
     > img {
       @include square(100%);
-      object-fit: cover;
+      object-fit: contain;
     }
 
     > strong {
@@ -79,7 +91,6 @@
   }
 
   > article {
-    // margin: auto;
     height: 85vh;
     padding: 2rem;
     width: 100%;
@@ -87,10 +98,10 @@
     background-color: white;
     border-radius: 5px;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.216);
+    position: relative;
 
-    > .form {
+    > form {
       @include flex(column, unset, center, 2rem);
-
       > h2 {
         text-transform: uppercase;
         letter-spacing: 2px;
@@ -105,31 +116,30 @@
       > div {
         width: 100%;
         position: relative;
-
         > label {
           position: absolute;
           left: 0;
           top: -1.5rem;
         }
 
-        > input {
-          padding: 1rem;
-
+        > input,
+        > textarea {
           @include inputStyle(
             100%,
             1rem,
             unset,
             1px solid rgba(13, 13, 13, 0.196)
           );
-
           border-radius: 5px;
+          max-height: 10rem;
         }
       }
+
       > button {
         padding: 1rem;
         border: none;
-        color: white;
         background-color: rgb(5, 107, 224);
+        color: white;
         width: 100%;
         border-radius: 5px;
         font-size: 1.1rem;
@@ -143,18 +153,15 @@
       text-align: center;
       @include heading(2px);
     }
-
     > h5 {
       margin: 2rem 0 0 0.5rem;
       font-size: 1.1rem;
       font-weight: 700;
     }
-
     > p {
       margin: 0.5rem;
     }
-
-    > button {
+    > .shipping-btn {
       margin: 2rem 0;
       padding: 1rem;
       border: none;
@@ -173,12 +180,12 @@
 
 .transaction-product-card {
   @include flex(row, unset, center, 1rem);
+
   > img {
     @include square(4rem);
     object-fit: cover;
     border-radius: 5px;
   }
-
   > span {
     margin-left: auto;
   }

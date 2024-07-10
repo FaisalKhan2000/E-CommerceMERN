@@ -30,6 +30,7 @@
   > main {
     width: 100%;
     padding: 0 2rem;
+
     > h1 {
       @include heading;
     }
@@ -47,6 +48,13 @@
       flex-wrap: wrap;
       height: calc(100% - 10rem);
       overflow-y: auto;
+    }
+    .search-product-list::-webkit-scrollbar {
+      display: none;
+    }
+    .search-product-list {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
     }
     // $p: 0.5rem 1rem, $bg, $color
     article {

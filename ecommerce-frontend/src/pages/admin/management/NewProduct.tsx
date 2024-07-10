@@ -1,7 +1,7 @@
 import { Form } from "react-router-dom";
-import AdminSidebar from "../../components/AdminSidebar";
-import FormRow from "../../components/FormRow";
-import SubmitButton from "../../components/SubmitButton";
+import AdminSidebar from "../../../components/admin/AdminSidebar";
+import FormRow from "../../../components/admin/FormRow";
+import SubmitButton from "../../../components/admin/SubmitButton";
 import { useState, ChangeEvent } from "react";
 
 const NewProduct = () => {

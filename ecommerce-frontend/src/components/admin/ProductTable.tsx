@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import {
   SortingState,
   flexRender,
@@ -15,6 +15,14 @@ import {
 } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
+import { useAllProductsQuery } from "../../app/services/productAPI";
+import { server } from "../ProductCard";
+import toast from "react-hot-toast";
+import { CustomError } from "../../types/api-types";
+import { useSelector } from "react-redux";
+
+import { UserReducerInitialState } from "../../types/reducer-types";
+import { Skeleton } from "../Loader";
 
 interface ProductType {
   photo: ReactElement;
@@ -54,152 +62,29 @@ const columns = [
   }),
 ];
 
-const img =
-  "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=804";
-
-const img2 = "https://m.media-amazon.com/images/I/514T0SvwkHL._SL1500_.jpg";
-
-const product: ProductType[] = [
-  {
-    photo: <img src={img} alt="Shoes" />,
-    name: "Puma Shoes Air Jordan Cook Nigga 2023",
-    price: 690,
-    stock: 3,
-    action: <Link to="/admin/product/sajknaskd">Manage</Link>,
-  },
-
-  {
-    photo: <img src={img2} alt="Shoes" />,
-    name: "Macbook",
-    price: 232223,
-    stock: 213,
-    action: <Link to="/admin/product/sdaskdnkasjdn">Manage</Link>,
-  },
-  {
-    photo: <img src={img} alt="Shoes" />,
-    name: "Puma Shoes Air Jordan Cook Nigga 2023",
-    price: 690,
-    stock: 3,
-    action: <Link to="/admin/product/sajknaskd">Manage</Link>,
-  },
-
-  {
-    photo: <img src={img2} alt="Shoes" />,
-    name: "Macbook",
-    price: 232223,
-    stock: 213,
-    action: <Link to="/admin/product/sdaskdnkasjdn">Manage</Link>,
-  },
-  {
-    photo: <img src={img} alt="Shoes" />,
-    name: "Puma Shoes Air Jordan Cook Nigga 2023",
-    price: 690,
-    stock: 3,
-    action: <Link to="/admin/product/sajknaskd">Manage</Link>,
-  },
-
-  {
-    photo: <img src={img2} alt="Shoes" />,
-    name: "Macbook",
-    price: 232223,
-    stock: 213,
-    action: <Link to="/admin/product/sdaskdnkasjdn">Manage</Link>,
-  },
-  {
-    photo: <img src={img2} alt="Shoes" />,
-    name: "Macbook",
-    price: 232223,
-    stock: 213,
-    action: <Link to="/admin/product/sdaskdnkasjdn">Manage</Link>,
-  },
-  {
-    photo: <img src={img2} alt="Shoes" />,
-    name: "Macbook",
-    price: 232223,
-    stock: 213,
-    action: <Link to="/admin/product/sdaskdnkasjdn">Manage</Link>,
-  },
-  {
-    photo: <img src={img2} alt="Shoes" />,
-    name: "Macbook",
-    price: 232223,
-    stock: 213,
-    action: <Link to="/admin/product/sdaskdnkasjdn">Manage</Link>,
-  },
-  {
-    photo: <img src={img2} alt="Shoes" />,
-    name: "Macbook",
-    price: 232223,
-    stock: 213,
-    action: <Link to="/admin/product/sdaskdnkasjdn">Manage</Link>,
-  },
-  {
-    photo: <img src={img2} alt="Shoes" />,
-    name: "Macbook",
-    price: 232223,
-    stock: 213,
-    action: <Link to="/admin/product/sdaskdnkasjdn">Manage</Link>,
-  },
-  {
-    photo: <img src={img2} alt="Shoes" />,
-    name: "Macbook",
-    price: 232223,
-    stock: 213,
-    action: <Link to="/admin/product/sdaskdnkasjdn">Manage</Link>,
-  },
-  {
-    photo: <img src={img2} alt="Shoes" />,
-    name: "Macbook",
-    price: 232223,
-    stock: 213,
-    action: <Link to="/admin/product/sdaskdnkasjdn">Manage</Link>,
-  },
-  {
-    photo: <img src={img2} alt="Shoes" />,
-    name: "Macbook",
-    price: 232223,
-    stock: 213,
-    action: <Link to="/admin/product/sdaskdnkasjdn">Manage</Link>,
-  },
-  {
-    photo: <img src={img2} alt="Shoes" />,
-    name: "Macbook",
-    price: 232223,
-    stock: 213,
-    action: <Link to="/admin/product/sdaskdnkasjdn">Manage</Link>,
-  },
-  {
-    photo: <img src={img2} alt="Shoes" />,
-    name: "Macbook",
-    price: 232223,
-    stock: 213,
-    action: <Link to="/admin/product/sdaskdnkasjdn">Manage</Link>,
-  },
-  {
-    photo: <img src={img2} alt="Shoes" />,
-    name: "Macbook",
-    price: 232223,
-    stock: 213,
-    action: <Link to="/admin/product/sdaskdnkasjdn">Manage</Link>,
-  },
-  {
-    photo: <img src={img2} alt="Shoes" />,
-    name: "Macbook",
-    price: 232223,
-    stock: 213,
-    action: <Link to="/admin/product/sdaskdnkasjdn">Manage</Link>,
-  },
-  {
-    photo: <img src={img2} alt="Shoes" />,
-    name: "Macbook",
-    price: 232223,
-    stock: 213,
-    action: <Link to="/admin/product/sdaskdnkasjdn">Manage</Link>,
-  },
-];
-
 const ProductTable = () => {
-  const [data] = useState<ProductType[]>(product);
+  const { user } = useSelector(
+    (state: { user: UserReducerInitialState }) => state.user
+  );
+  const { data, isError, error, isLoading } = useAllProductsQuery(user?._id!);
+
+  const [rows, setRows] = useState<ProductType[]>([]);
+
+  console.log(rows);
+  useEffect(() => {
+    if (data) {
+      setRows(
+        data.products.map((product) => ({
+          photo: <img src={`${server}/${product.photo}`} />,
+          name: product.name,
+          price: product.price,
+          stock: product.stock,
+          action: <Link to={`/admin/product/${product._id}`}>Manage</Link>,
+        }))
+      );
+    }
+  }, [data]);
+
   const [sorting, setSorting] = useState<SortingState>([]);
   const [filtering, setFiltering] = useState("");
   const [pagination, setPagination] = useState({
@@ -212,7 +97,7 @@ const ProductTable = () => {
   };
 
   const table = useReactTable({
-    data,
+    data: rows,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -235,6 +120,10 @@ const ProductTable = () => {
   // const { pagination } = table.getState();
   const currentPage = pagination.pageIndex + 1;
 
+  if (isError) {
+    toast.error((error as CustomError).data.message);
+  }
+
   return (
     <div className="dashboard-product-box">
       <h2 className="heading">Products</h2>
@@ -248,44 +137,48 @@ const ProductTable = () => {
         />
       </div>
 
-      <table className="table">
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
-                >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                  {header.column.getIsSorted() ? (
-                    header.column.getIsSorted() === "asc" ? (
-                      <AiOutlineSortAscending />
-                    ) : (
-                      <AiOutlineSortDescending />
-                    )
-                  ) : null}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
+      {isLoading ? (
+        <Skeleton length={25} />
+      ) : (
+        <table className="table">
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                    {header.column.getIsSorted() ? (
+                      header.column.getIsSorted() === "asc" ? (
+                        <AiOutlineSortAscending />
+                      ) : (
+                        <AiOutlineSortDescending />
+                      )
+                    ) : null}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
 
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <tr key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
       <div className="table-pagination">
         <button

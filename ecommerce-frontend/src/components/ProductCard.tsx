@@ -9,7 +9,7 @@ type ProductsProps = {
   handler: () => void;
 };
 
-const server = "Ssjsdisidsidis";
+export const server = "http://localhost:5100";
 
 const ProductCard = ({
   productId,
@@ -21,7 +21,7 @@ const ProductCard = ({
 }: ProductsProps) => {
   return (
     <div className="product-card">
-      <img src={photo} alt={name} />
+      <img src={`${server}/${photo}`} alt={name} />
       <p>{name}</p>
       <span>₹{price}</span>
 

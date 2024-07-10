@@ -1,6 +1,6 @@
 import { useState } from "react";
-import AdminSidebar from "../../components/AdminSidebar";
-import { OrderItemType, OrderType } from "../../types";
+import AdminSidebar from "../../../components/admin/AdminSidebar";
+import { OrderItemType, OrderType } from "../../../types/admin/types";
 import { Link } from "react-router-dom";
 
 const img =

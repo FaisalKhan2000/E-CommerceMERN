@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { userExist, userNotExist } from "./app/features/userSlice";
 import { getUser } from "./app/services/userAPI";
 import { UserReducerInitialState } from "./types/reducer-types";
+import Loader, { LoaderLayout } from "./components/Loader";
 
 const Home = lazy(() => import("./pages/Home"));
 const Search = lazy(() => import("./pages/Search"));
@@ -38,7 +39,7 @@ const Coupon = lazy(() => import("./pages/admin/apps/Coupon"));
 
 const App = () => {
   const dispatch = useDispatch();
-  const { user } = useSelector(
+  const { user, loading } = useSelector(
     (state: { user: UserReducerInitialState }) => state.user
   );
 
@@ -57,6 +58,14 @@ const App = () => {
       }
     });
   }, []);
+
+  if (loading) {
+    return (
+      <div>
+        <Loader />
+      </div>
+    );
+  }
 
   const router = createBrowserRouter([
     {
@@ -91,9 +100,11 @@ const App = () => {
     {
       path: "/login",
       element: (
-        <SuspenseWrapper>
-          <Login />
-        </SuspenseWrapper>
+        <ProtectedRoute isAuthenticated={user ? false : true}>
+          <SuspenseWrapper>
+            <Login />
+          </SuspenseWrapper>
+        </ProtectedRoute>
       ),
     },
 

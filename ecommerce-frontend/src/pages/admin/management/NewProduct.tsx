@@ -60,7 +60,7 @@ const NewProduct = () => {
     formData.append("price", data.price.toString());
     formData.append("stock", data.stock.toString());
     formData.append("photo", data.photo);
-    formData.append("category", data.name);
+    formData.append("category", data.category);
     try {
       const res = await newProduct({ id: user?._id!, formData });
 

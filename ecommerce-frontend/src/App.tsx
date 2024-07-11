@@ -25,7 +25,9 @@ const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
 const Products = lazy(() => import("./pages/admin/Products"));
 const Transaction = lazy(() => import("./pages/admin/Transaction"));
 const Customers = lazy(() => import("./pages/admin/Customers"));
-const NewProduct = lazy(() => import("./pages/admin/management/NewProduct"));
+const NewProduct = lazy(
+  () => import("./pages/admin/management/NewProductcopy")
+);
 const ProductManagement = lazy(
   () => import("./pages/admin/management/ProductManagement")
 );

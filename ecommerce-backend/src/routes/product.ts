@@ -32,7 +32,7 @@ router.route("/admin-products").get(adminOnly, getAdminProducts);
 router
   .route("/:id")
   .get(getSingleProduct)
-  .patch(adminOnly, singleUpload, updateProduct)
+  .put(adminOnly, singleUpload, updateProduct)
   .delete(adminOnly, deleteProduct);
 
 export default router;

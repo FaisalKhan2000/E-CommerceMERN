@@ -13,8 +13,8 @@ export type Product = {
   price: number;
   stock: number;
   category: string;
-  ratings: number;
-  numOfReviews: number;
+  // ratings: number;
+  // numOfReviews: number;
   description: string;
   photo: string;
   // photos?: {

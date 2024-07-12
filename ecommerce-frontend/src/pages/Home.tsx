@@ -7,7 +7,7 @@ import { Skeleton } from "../components/Loader";
 
 const Home = () => {
   const { data, isError, isLoading } = useLatestProductsQuery("");
-  console.log(data);
+  // console.log(data);
   const addToCartHandler = () => {};
 
   if (isError) toast.error("Cannot Fetch the Products");

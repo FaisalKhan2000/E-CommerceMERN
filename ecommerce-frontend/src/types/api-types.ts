@@ -42,9 +42,23 @@ export type SearchProductsRequest = {
   sort: string;
 };
 
+export type ProductDetailResponse = {
+  success: boolean;
+  product: Product;
+};
+
 export type NewProductRequest = {
   id: string;
   formData: FormData;
+};
+export type UpdateProductRequest = {
+  userId: string;
+  productId: string;
+  formData: FormData;
+};
+export type DeleteProductRequest = {
+  userId: string;
+  productId: string;
 };
 
 export type DeleteUserRequest = {

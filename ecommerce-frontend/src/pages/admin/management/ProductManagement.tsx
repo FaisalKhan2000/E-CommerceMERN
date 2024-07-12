@@ -1,38 +1,73 @@
-import { useParams } from "react-router-dom";
+import { ChangeEvent, useState } from "react";
+import { FaTrash } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
-import FormRow from "../../../components/admin/FormRow";
-import SubmitButton from "../../../components/admin/SubmitButton";
-import { useState, ChangeEvent, FormEvent } from "react";
+import {
+  useDeleteProductMutation,
+  useProductDetailsQuery,
+  useUpdateProductMutation,
+} from "../../../app/services/productAPI";
+import { Skeleton } from "../../../components/Loader";
+import { server } from "../../../components/ProductCard";
+import { UserReducerInitialState } from "../../../types/reducer-types";
+import { responseToast } from "../../../utils/features";
+import { FieldValues, useForm } from "react-hook-form";
 
-const img =
-  "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=804";
+import axios from "axios";
+
+type ProductFormValues = {
+  name: string;
+  price: number;
+  stock: number;
+  category: string;
+  description: string;
+  photo?: File;
+};
 
 const ProductManagement = () => {
-  const [name, setName] = useState<string>("Puma Shoes");
-  const [price, setPrice] = useState<number>(2000);
-  const [stock, setStock] = useState<number>(10);
-  const [photo, setPhoto] = useState<string>(img);
+  const params = useParams();
+  const navigate = useNavigate();
+  const { user } = useSelector(
+    (state: { user: UserReducerInitialState }) => state.user
+  );
 
-  const [nameUpdate, setNameUpdate] = useState<string>(name);
-  const [priceUpdate, setPriceUpdate] = useState<number>(price);
-  const [stockUpdate, setStockUpdate] = useState<number>(stock);
-  const [photoUpdate, setPhotoUpdate] = useState<string>(photo);
+  const { data, isLoading, isError } = useProductDetailsQuery(params.id!);
+  const [updateProduct] = useUpdateProductMutation();
+  const [deleteProduct] = useDeleteProductMutation();
 
-  const { id } = useParams<{ id: string }>();
+  const getDefaultValues = async () => {
+    const { data: defaultData } = await axios.get(
+      `${import.meta.env.VITE_SERVER}/api/v1/product/${params.id}`
+    );
 
-  const submitHandler = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setName(nameUpdate);
-    setPrice(priceUpdate);
-    setStock(stockUpdate);
-    setPhoto(photoUpdate);
+    return {
+      name: defaultData?.product.name || " ",
+      price: defaultData?.product.price || 0,
+      stock: defaultData?.product.stock || 0,
+      category: defaultData?.product.category || "",
+      description: defaultData?.product.description || "",
+      photo: defaultData?.product.photo || "",
+    };
   };
 
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+    reset,
+  } = useForm<ProductFormValues>({
+    defaultValues: getDefaultValues,
+  });
+
+  const [photoUpdate, setPhotoUpdate] = useState<string>();
+
   const changeImageHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file: File | undefined = e.target.files?.[0];
+
+    const reader: FileReader = new FileReader();
 
     if (file) {
-      const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
         if (typeof reader.result === "string") {
@@ -42,69 +77,129 @@ const ProductManagement = () => {
     }
   };
 
+  const onSubmit = async (data: FieldValues) => {
+    const formData = new FormData();
+
+    try {
+      formData.append("name", data.name);
+      formData.append("description", data.description);
+      formData.append("price", data.price.toString());
+      formData.append("stock", data.stock.toString());
+
+      // Access the file input directly from data
+      const file = data.photo?.[0]; // Assuming data.photo is an array
+      if (file) {
+        formData.append("photo", file);
+      }
+
+      formData.append("category", data.category);
+
+      const res = await updateProduct({
+        formData,
+        userId: user?._id!,
+        productId: params.id!,
+      });
+      responseToast(res, navigate, "/admin/product");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteProduct = async () => {
+    try {
+      const res = await deleteProduct({
+        userId: user?._id!,
+        productId: data?.product._id!,
+      });
+      responseToast(res, navigate, "/admin/product");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="admin-container">
       <AdminSidebar />
       <main className="product-management">
-        <section>
-          <strong>ID - {id}</strong>
-          <img src={photo} alt="Product" />
-          <p>{name}</p>
-          {stock > 0 ? (
-            <span className="green">{stock} Available</span>
-          ) : (
-            <span className="red">Not Available</span>
-          )}
-          <h3>${price}</h3>
-        </section>
+        {isLoading ? (
+          <Skeleton length={20} />
+        ) : (
+          <>
+            <section>
+              <strong>ID - {data?.product._id}</strong>
+              <img src={`${server}/${data?.product.photo}`} alt="Product" />
+              <p>{data?.product.name}</p>
+              {data?.product.stock! > 0 ? (
+                <span className="green">{data?.product.stock} Available</span>
+              ) : (
+                <span className="red"> Not Available</span>
+              )}
+              <h3>₹{data?.product.price}</h3>
+            </section>
+            <article>
+              <button
+                className="product-delete-btn"
+                onClick={handleDeleteProduct}
+              >
+                <FaTrash />
+              </button>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <h2>Manage</h2>
+                <div>
+                  <label>Name</label>
+                  <input {...register("name")} type="text" placeholder="Name" />
+                </div>
 
-        <article>
-          <form onSubmit={submitHandler} className="form">
-            <h2>Manage Product</h2>
+                <div>
+                  <label>Description</label>
+                  <textarea
+                    {...register("description")}
+                    placeholder="Description"
+                  />
+                </div>
+                <div>
+                  <label>Price</label>
+                  <input
+                    {...register("price")}
+                    type="number"
+                    placeholder="Price"
+                  />
+                </div>
+                <div>
+                  <label>Stock</label>
+                  <input
+                    {...register("stock")}
+                    type="number"
+                    placeholder="Stock"
+                  />
+                </div>
 
-            <FormRow
-              type="text"
-              name="name"
-              labelText="Name"
-              placeholder="Name"
-              value={nameUpdate}
-              onChange={(e) => setNameUpdate(e.target.value)}
-            />
-            <FormRow
-              type="number"
-              name="price"
-              labelText="Price"
-              placeholder="Price"
-              value={priceUpdate}
-              onChange={(e) => setPriceUpdate(Number(e.target.value))}
-            />
-            <FormRow
-              type="number"
-              name="stock"
-              labelText="Stock"
-              placeholder="Stock"
-              value={stockUpdate}
-              onChange={(e) => setStockUpdate(Number(e.target.value))}
-            />
-            <div className="form-row">
-              <label htmlFor="photo" className="form-label">
-                Photo
-              </label>
-              <input
-                required
-                type="file"
-                id="photo"
-                name="photo"
-                onChange={changeImageHandler}
-                className="form-input"
-                accept="image/*"
-              />
-            </div>
+                <div>
+                  <label>Category</label>
+                  <input
+                    {...register("category")}
+                    type="text"
+                    placeholder="eg. laptop, camera etc"
+                  />
+                </div>
 
-            {photoUpdate && <img src={photoUpdate} alt="Selected product" />}
-            <SubmitButton />
-          </form>
-        </article>
+                <div>
+                  <label>Photo</label>
+                  <input
+                    {...register("photo")}
+                    type="file"
+                    onChange={changeImageHandler}
+                  />
+                </div>
+
+                {photoUpdate && <img src={photoUpdate} alt="New Image" />}
+                <button disabled={isSubmitting} type="submit">
+                  Update
+                </button>
+              </form>
+            </article>
+          </>
+        )}
       </main>
     </div>
   );

@@ -92,7 +92,7 @@ export const getSingleProduct = async (
   if (myCache.has(`product-${id}`)) {
     product = JSON.parse(myCache.get(`product-${id}`) as string);
   } else {
-    product = await Product.find({ _id: id });
+    product = await Product.findById(id);
 
     myCache.set(`product-${id}`, JSON.stringify(product));
   }

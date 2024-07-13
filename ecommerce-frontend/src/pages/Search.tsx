@@ -1,12 +1,15 @@
 import { useState } from "react";
-import ProductCard from "../components/ProductCard";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../app/features/cartSlice";
 import {
   useCategoriesQuery,
   useSearchProductsQuery,
 } from "../app/services/productAPI";
-import toast from "react-hot-toast";
-import { CustomError } from "../types/api-types";
 import { Skeleton } from "../components/Loader";
+import ProductCard from "../components/ProductCard";
+import { CustomError } from "../types/api-types";
+import { CartItem } from "../types/types";
 
 const Search = () => {
   const {
@@ -15,6 +18,8 @@ const Search = () => {
     isError,
     error,
   } = useCategoriesQuery("");
+
+  const dispatch = useDispatch();
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
@@ -37,7 +42,11 @@ const Search = () => {
 
   // console.log(searchedData);
 
-  const addToCartHandler = () => {};
+  const addToCartHandler = (cartItem: CartItem) => {
+    if (cartItem.stock < 1) return toast.error("Out of Stock");
+    dispatch(addToCart(cartItem));
+    return toast.success("Added to Cart");
+  };
   const isPrevPage = page > 1;
   const isNextPage = page < 4;
 

@@ -1,5 +1,7 @@
 import express from "express";
 import {
+  allOrders,
+  allOrdersNew,
   deleteOrder,
   getSingleOrder,
   myOrders,
@@ -16,13 +18,13 @@ router.route("/new").post(newOrder);
 router.route("/my").get(myOrders);
 
 // route - /api/v1/order/all
-router.route("/all").get(adminOnly, myOrders);
+router.route("/all").get(adminOnly, allOrders);
 
 // route - /api/v1/order/:id
 router
   .route("/:id")
-  .get(adminOnly, getSingleOrder)
-  .patch(adminOnly, processOrder)
+  .get(getSingleOrder)
+  .put(adminOnly, processOrder)
   .delete(adminOnly, deleteOrder);
 
 export default router;

@@ -28,6 +28,25 @@ export const myOrders = async (
   });
 };
 
+export const allOrdersNew = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  let orders;
+
+  if (myCache.has(`all-orders`)) {
+    orders = JSON.parse(myCache.get(`all-orders`) as string);
+  } else {
+    orders = await Order.find().populate("user", "name");
+    myCache.set(`all-orders`, JSON.stringify(orders));
+  }
+
+  return res.status(StatusCodes.OK).json({
+    success: true,
+    orders,
+  });
+};
 export const allOrders = async (
   req: Request,
   res: Response,

@@ -17,12 +17,12 @@ import {
 
 import { BsSearch } from "react-icons/bs";
 
+import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { UserReducerInitialState } from "../../types/reducer-types";
 import { useAllOrdersQuery } from "../../app/services/orderAPI";
 import { CustomError } from "../../types/api-types";
-import toast from "react-hot-toast";
+import { UserReducerInitialState } from "../../types/reducer-types";
 import { Skeleton } from "../Loader";
 
 interface TransactionType {
@@ -147,7 +147,7 @@ const TransactionTable = () => {
 
   return (
     <div className="dashboard-product-box">
-      <h2 className="heading">Products</h2>
+      <h2 className="heading">Transactions</h2>
       <div className="search-filter">
         <BsSearch />
         <input

@@ -427,7 +427,7 @@ const CustomerTable = () => {
 
   return (
     <div className="dashboard-product-box">
-      <h2 className="heading">Products</h2>
+      <h2 className="heading">Customers</h2>
       <div className="search-filter">
         <BsSearch />
         <input

@@ -1,8 +1,8 @@
 import { ChangeEvent, useState } from "react";
+import { FieldValues, useForm } from "react-hook-form";
 import { FaTrash } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import AdminSidebar from "../../../components/admin/AdminSidebar";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import {
   useDeleteProductMutation,
   useProductDetailsQuery,
@@ -10,9 +10,9 @@ import {
 } from "../../../app/services/productAPI";
 import { Skeleton } from "../../../components/Loader";
 import { server } from "../../../components/ProductCard";
+import AdminSidebar from "../../../components/admin/AdminSidebar";
 import { UserReducerInitialState } from "../../../types/reducer-types";
 import { responseToast } from "../../../utils/features";
-import { FieldValues, useForm } from "react-hook-form";
 
 import axios from "axios";
 
@@ -55,7 +55,6 @@ const ProductManagement = () => {
     register,
     handleSubmit,
     formState: { isSubmitting },
-    reset,
   } = useForm<ProductFormValues>({
     defaultValues: getDefaultValues,
   });
@@ -116,6 +115,8 @@ const ProductManagement = () => {
       console.log(error);
     }
   };
+
+  if (isError) <Navigate to={"/404"} />;
 
   return (
     <div className="admin-container">

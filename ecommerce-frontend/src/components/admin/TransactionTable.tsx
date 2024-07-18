@@ -1,14 +1,15 @@
-import { ReactElement, useState } from "react";
 import {
   SortingState,
+  createColumnHelper,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  createColumnHelper,
 } from "@tanstack/react-table";
+import { ReactElement, useEffect, useState } from "react";
+
 import {
   AiOutlineSortAscending,
   AiOutlineSortDescending,
@@ -16,7 +17,13 @@ import {
 
 import { BsSearch } from "react-icons/bs";
 
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { UserReducerInitialState } from "../../types/reducer-types";
+import { useAllOrdersQuery } from "../../app/services/orderAPI";
+import { CustomError } from "../../types/api-types";
+import toast from "react-hot-toast";
+import { Skeleton } from "../Loader";
 
 interface TransactionType {
   user: string;
@@ -62,107 +69,47 @@ const columns = [
   }),
 ];
 
-const transactions: TransactionType[] = [
-  {
-    user: "Charas",
-    amount: 4500,
-    discount: 400,
-    quantity: 3,
-    status: <span className="red">Processing</span>,
-    action: <Link to="/admin/transaction/sajknaskd">Manage</Link>,
-  },
-  {
-    user: "Xavirors",
-    amount: 6999,
-    discount: 400,
-    status: <span className="green">Shipped</span>,
-    quantity: 6,
-    action: <Link to="/admin/transaction/sajknaskd">Manage</Link>,
-  },
-  {
-    user: "Xavirors",
-    amount: 6999,
-    discount: 400,
-    status: <span className="purple">Delivered</span>,
-    quantity: 6,
-    action: <Link to="/admin/transaction/sajknaskd">Manage</Link>,
-  },
-  {
-    user: "Charas",
-    amount: 4500,
-    discount: 400,
-    quantity: 3,
-    status: <span className="red">Processing</span>,
-    action: <Link to="/admin/transaction/sajknaskd">Manage</Link>,
-  },
-  {
-    user: "Xavirors",
-    amount: 6999,
-    discount: 400,
-    status: <span className="green">Shipped</span>,
-    quantity: 6,
-    action: <Link to="/admin/transaction/sajknaskd">Manage</Link>,
-  },
-  {
-    user: "Xavirors",
-    amount: 6999,
-    discount: 400,
-    status: <span className="purple">Delivered</span>,
-    quantity: 6,
-    action: <Link to="/admin/transaction/sajknaskd">Manage</Link>,
-  },
-  {
-    user: "Charas",
-    amount: 4500,
-    discount: 400,
-    quantity: 3,
-    status: <span className="red">Processing</span>,
-    action: <Link to="/admin/transaction/sajknaskd">Manage</Link>,
-  },
-  {
-    user: "Xavirors",
-    amount: 6999,
-    discount: 400,
-    status: <span className="green">Shipped</span>,
-    quantity: 6,
-    action: <Link to="/admin/transaction/sajknaskd">Manage</Link>,
-  },
-  {
-    user: "Xavirors",
-    amount: 6999,
-    discount: 400,
-    status: <span className="purple">Delivered</span>,
-    quantity: 6,
-    action: <Link to="/admin/transaction/sajknaskd">Manage</Link>,
-  },
-  {
-    user: "Charas",
-    amount: 4500,
-    discount: 400,
-    quantity: 3,
-    status: <span className="red">Processing</span>,
-    action: <Link to="/admin/transaction/sajknaskd">Manage</Link>,
-  },
-  {
-    user: "Xavirors",
-    amount: 6999,
-    discount: 400,
-    status: <span className="green">Shipped</span>,
-    quantity: 6,
-    action: <Link to="/admin/transaction/sajknaskd">Manage</Link>,
-  },
-  {
-    user: "Xavirors",
-    amount: 6999,
-    discount: 400,
-    status: <span className="purple">Delivered</span>,
-    quantity: 6,
-    action: <Link to="/admin/transaction/sajknaskd">Manage</Link>,
-  },
-];
-
 const TransactionTable = () => {
-  const [data] = useState<TransactionType[]>(transactions);
+  const { user } = useSelector(
+    (state: { user: UserReducerInitialState }) => state.user
+  );
+
+  const { data, isLoading, isError, error } = useAllOrdersQuery(user?._id!);
+
+  const [rows, setRows] = useState<TransactionType[]>([]);
+
+  if (isError) {
+    const err = error as CustomError;
+    toast.error(err.data.message);
+  }
+
+  useEffect(() => {
+    if (data) {
+      setRows(
+        data.orders.map((order) => ({
+          user: order.user.name,
+          amount: order.total,
+          discount: order.discount,
+          quantity: order.orderItems.length,
+          status: (
+            <span
+              className={
+                order.status === "Processing"
+                  ? "red"
+                  : order.status === "Shipped"
+                  ? "green"
+                  : "purple"
+              }
+            >
+              {order.status}
+            </span>
+          ),
+          action: <Link to={`/admin/transaction/${order._id}`}> Manage </Link>,
+        }))
+      );
+    }
+  }, [data]);
+
   const [sorting, setSorting] = useState<SortingState>([]);
   const [filtering, setFiltering] = useState("");
   const [pagination, setPagination] = useState({
@@ -175,7 +122,7 @@ const TransactionTable = () => {
   };
 
   const table = useReactTable({
-    data,
+    data: rows,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -211,63 +158,69 @@ const TransactionTable = () => {
         />
       </div>
 
-      <table className="table">
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
-                >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                  {header.column.getIsSorted() ? (
-                    header.column.getIsSorted() === "asc" ? (
-                      <AiOutlineSortAscending />
-                    ) : (
-                      <AiOutlineSortDescending />
-                    )
-                  ) : null}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
+      {isLoading ? (
+        <Skeleton length={25} />
+      ) : (
+        <table className="table">
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                    {header.column.getIsSorted() ? (
+                      header.column.getIsSorted() === "asc" ? (
+                        <AiOutlineSortAscending />
+                      ) : (
+                        <AiOutlineSortDescending />
+                      )
+                    ) : null}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
 
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <tr key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
-      <div className="table-pagination">
-        <button
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Prev
-        </button>
-        <span>
-          {" "}
-          {currentPage} of {table.getPageCount()}
-        </span>
-        <button
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </button>
-      </div>
+      {rows.length > 5 && (
+        <div className="table-pagination">
+          <button
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Prev
+          </button>
+          <span>
+            {" "}
+            {currentPage} of {table.getPageCount()}
+          </span>
+          <button
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };

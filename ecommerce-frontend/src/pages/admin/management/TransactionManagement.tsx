@@ -2,6 +2,7 @@ import { useState } from "react";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
 import { OrderItemType, OrderType } from "../../../types/admin/types";
 import { Link } from "react-router-dom";
+import { FaTrash } from "react-icons/fa";
 
 const img =
   "https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=804";
@@ -56,6 +57,8 @@ const TransactionManagement = () => {
     }));
   };
 
+  const deleteHandler = () => {};
+
   return (
     <div className="admin-container">
       <AdminSidebar />
@@ -79,6 +82,9 @@ const TransactionManagement = () => {
         </section>
 
         <article className="shipping-info-card">
+          <button className="product-delete-btn" onClick={deleteHandler}>
+            <FaTrash />
+          </button>
           <h1>Order Info</h1>
           <h5>User Info</h5>
           <p>Name: {name}</p>
@@ -109,7 +115,9 @@ const TransactionManagement = () => {
             </span>
           </p>
 
-          <button onClick={updateHandler}>Process Status</button>
+          <button className="shipping-btn" onClick={updateHandler}>
+            Process Status
+          </button>
         </article>
       </main>
     </div>

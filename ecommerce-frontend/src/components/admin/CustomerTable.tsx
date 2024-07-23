@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import {
   SortingState,
   flexRender,
@@ -16,6 +16,17 @@ import {
 
 import { BsSearch } from "react-icons/bs";
 import { FaTrash } from "react-icons/fa";
+import { UserReducerInitialState } from "../../types/reducer-types";
+import { useSelector } from "react-redux";
+import { RootState } from "../../app/store";
+import {
+  useAllUsersQuery,
+  useDeleteUserMutation,
+} from "../../app/services/userAPI";
+import { responseToast } from "../../utils/features";
+import { CustomError } from "../../types/api-types";
+import toast from "react-hot-toast";
+import { Skeleton } from "../Loader";
 
 interface UserType {
   avatar: ReactElement;
@@ -61,335 +72,53 @@ const columns = [
   }),
 ];
 
-const img = "https://randomuser.me/api/portraits/women/54.jpg";
-const img2 = "https://randomuser.me/api/portraits/women/50.jpg";
-
-const users: UserType[] = [
-  {
-    avatar: (
-      <img
-        style={{
-          borderRadius: "50%",
-        }}
-        src={img}
-        alt="Shoes"
-      />
-    ),
-    name: "Emily Palmer",
-    email: "emily.palmer@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
-  {
-    avatar: (
-      <img
-        style={{
-          borderRadius: "50%",
-        }}
-        src={img}
-        alt="Shoes"
-      />
-    ),
-    name: "Emily Palmer",
-    email: "emily.palmer@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
-  {
-    avatar: (
-      <img
-        style={{
-          borderRadius: "50%",
-        }}
-        src={img}
-        alt="Shoes"
-      />
-    ),
-    name: "Emily Palmer",
-    email: "emily.palmer@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
-  {
-    avatar: (
-      <img
-        style={{
-          borderRadius: "50%",
-        }}
-        src={img}
-        alt="Shoes"
-      />
-    ),
-    name: "Emily Palmer",
-    email: "emily.palmer@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
-  {
-    avatar: (
-      <img
-        style={{
-          borderRadius: "50%",
-        }}
-        src={img}
-        alt="Shoes"
-      />
-    ),
-    name: "Emily Palmer",
-    email: "emily.palmer@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
-  {
-    avatar: (
-      <img
-        style={{
-          borderRadius: "50%",
-        }}
-        src={img}
-        alt="Shoes"
-      />
-    ),
-    name: "Emily Palmer",
-    email: "emily.palmer@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
-  {
-    avatar: (
-      <img
-        style={{
-          borderRadius: "50%",
-        }}
-        src={img}
-        alt="Shoes"
-      />
-    ),
-    name: "Emily Palmer",
-    email: "emily.palmer@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
-  {
-    avatar: (
-      <img
-        style={{
-          borderRadius: "50%",
-        }}
-        src={img}
-        alt="Shoes"
-      />
-    ),
-    name: "Emily Palmer",
-    email: "emily.palmer@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
-  {
-    avatar: (
-      <img
-        style={{
-          borderRadius: "50%",
-        }}
-        src={img}
-        alt="Shoes"
-      />
-    ),
-    name: "Emily Palmer",
-    email: "emily.palmer@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
-  {
-    avatar: (
-      <img
-        style={{
-          borderRadius: "50%",
-        }}
-        src={img}
-        alt="Shoes"
-      />
-    ),
-    name: "Emily Palmer",
-    email: "emily.palmer@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
-  {
-    avatar: (
-      <img
-        style={{
-          borderRadius: "50%",
-        }}
-        src={img}
-        alt="Shoes"
-      />
-    ),
-    name: "Emily Palmer",
-    email: "emily.palmer@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
-  {
-    avatar: (
-      <img
-        style={{
-          borderRadius: "50%",
-        }}
-        src={img}
-        alt="Shoes"
-      />
-    ),
-    name: "Emily Palmer",
-    email: "emily.palmer@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
-  {
-    avatar: (
-      <img
-        style={{
-          borderRadius: "50%",
-        }}
-        src={img}
-        alt="Shoes"
-      />
-    ),
-    name: "Emily Palmer",
-    email: "emily.palmer@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
-  {
-    avatar: (
-      <img
-        style={{
-          borderRadius: "50%",
-        }}
-        src={img}
-        alt="Shoes"
-      />
-    ),
-    name: "Emily Palmer",
-    email: "emily.palmer@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
-  {
-    avatar: (
-      <img
-        style={{
-          borderRadius: "50%",
-        }}
-        src={img}
-        alt="Shoes"
-      />
-    ),
-    name: "Emily Palmer",
-    email: "emily.palmer@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
-
-  {
-    avatar: (
-      <img
-        style={{
-          borderRadius: "50%",
-        }}
-        src={img2}
-        alt="Shoes"
-      />
-    ),
-    name: "May Scoot",
-    email: "aunt.may@example.com",
-    gender: "female",
-    role: "user",
-    action: (
-      <button>
-        <FaTrash />
-      </button>
-    ),
-  },
-];
-
 const CustomerTable = () => {
-  const [data] = useState<UserType[]>(users);
+  const { user } = useSelector((state: RootState) => state.user);
+
+  const { data, isError, error, isLoading } = useAllUsersQuery(user?._id!);
+
+  const [rows, setRows] = useState<UserType[]>([]);
+
+  const [deleteUser] = useDeleteUserMutation();
+
+  const deleteHandler = async (userId: string) => {
+    const res = await deleteUser({ userId, adminUserId: user?._id! });
+    responseToast(res, null, "");
+  };
+  if (isError) {
+    const err = error as CustomError;
+    toast.error(err.data.message);
+  }
+
+  useEffect(() => {
+    if (data)
+      setRows(
+        data.users.map((i) => ({
+          avatar: (
+            <img
+              style={{
+                borderRadius: "50%",
+              }}
+              src={i.photo}
+              alt={i.name}
+            />
+          ),
+          name: i.name,
+          email: i.email,
+          gender: i.gender,
+          role: i.role,
+          action: (
+            <button
+              disabled={i.role === "admin"}
+              onClick={() => deleteHandler(i._id)}
+            >
+              <FaTrash />
+            </button>
+          ),
+        }))
+      );
+  }, [data]);
+
   const [sorting, setSorting] = useState<SortingState>([]);
   const [filtering, setFiltering] = useState("");
   const [pagination, setPagination] = useState({
@@ -402,7 +131,7 @@ const CustomerTable = () => {
   };
 
   const table = useReactTable({
-    data,
+    data: rows,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -438,63 +167,69 @@ const CustomerTable = () => {
         />
       </div>
 
-      <table className="table">
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
-                >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                  {header.column.getIsSorted() ? (
-                    header.column.getIsSorted() === "asc" ? (
-                      <AiOutlineSortAscending />
-                    ) : (
-                      <AiOutlineSortDescending />
-                    )
-                  ) : null}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
+      {isLoading ? (
+        <Skeleton length={25} />
+      ) : (
+        <table className="table">
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                    {header.column.getIsSorted() ? (
+                      header.column.getIsSorted() === "asc" ? (
+                        <AiOutlineSortAscending />
+                      ) : (
+                        <AiOutlineSortDescending />
+                      )
+                    ) : null}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
 
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <tr key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
-      <div className="table-pagination">
-        <button
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Prev
-        </button>
-        <span>
-          {" "}
-          {currentPage} of {table.getPageCount()}
-        </span>
-        <button
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </button>
-      </div>
+      {rows.length > 5 && (
+        <div className="table-pagination">
+          <button
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Prev
+          </button>
+          <span>
+            {" "}
+            {currentPage} of {table.getPageCount()}
+          </span>
+          <button
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };

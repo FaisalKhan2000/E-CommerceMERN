@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { userExist, userNotExist } from "./app/features/userSlice";
 import { getUser } from "./app/services/userAPI";
 import { UserReducerInitialState } from "./types/reducer-types";
-import Loader, { LoaderLayout } from "./components/Loader";
+import Loader from "./components/Loader";
 
 const Home = lazy(() => import("./pages/Home"));
 const Search = lazy(() => import("./pages/Search"));
@@ -19,15 +19,15 @@ const Shipping = lazy(() => import("./pages/Shipping"));
 const Login = lazy(() => import("./pages/Login"));
 const Orders = lazy(() => import("./pages/Orders"));
 const OrderDetails = lazy(() => import("./pages/OrderDetails"));
+const NotFound = lazy(() => import("./pages/not-found"));
+const Checkout = lazy(() => import("./pages/Checkout"));
 
 // Importing Admin Routes
 const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
 const Products = lazy(() => import("./pages/admin/Products"));
 const Transaction = lazy(() => import("./pages/admin/Transaction"));
 const Customers = lazy(() => import("./pages/admin/Customers"));
-const NewProduct = lazy(
-  () => import("./pages/admin/management/NewProductcopy")
-);
+const NewProduct = lazy(() => import("./pages/admin/management/NewProduct"));
 const ProductManagement = lazy(
   () => import("./pages/admin/management/ProductManagement")
 );
@@ -118,6 +118,17 @@ const App = () => {
           <SuspenseWrapper>
             {/* <Header /> */}
             <Shipping />
+          </SuspenseWrapper>
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/pay",
+      element: (
+        <ProtectedRoute isAuthenticated={isAuthenticated}>
+          <SuspenseWrapper>
+            {/* <Header /> */}
+            <Checkout />
           </SuspenseWrapper>
         </ProtectedRoute>
       ),
@@ -309,6 +320,15 @@ const App = () => {
             <TransactionManagement />
           </SuspenseWrapper>
         </ProtectedRoute>
+      ),
+    },
+
+    {
+      path: "*",
+      element: (
+        <SuspenseWrapper>
+          <NotFound />
+        </SuspenseWrapper>
       ),
     },
   ]);

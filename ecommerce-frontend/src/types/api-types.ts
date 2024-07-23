@@ -75,7 +75,7 @@ export type DeleteUserRequest = {
 export type NewOrderRequest = {
   shippingInfo: ShippingInfo;
   orderItems: CartItem[];
-  subTotal: number;
+  subtotal: number;
   tax: number;
   shippingCharges: number;
   discount: number;

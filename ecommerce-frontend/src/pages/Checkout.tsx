@@ -16,6 +16,9 @@ import { responseToast } from "../utils/features";
 import { resetCart } from "../app/features/cartSlice";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_KEY);
+// const stripePromise = loadStripe(
+//   "pk_test_51OzEfuSB91cvFDQcevZ4kNG4zBHEiq0POaM3q97LR8vCTWX5HVEANERVqpl2lH8YhoU93qnV62BCcOYyvRcDyNTx00X9o265Rk"
+// );
 
 const CheckoutForm = () => {
   const stripe = useStripe();
@@ -48,7 +51,7 @@ const CheckoutForm = () => {
     const orderData: NewOrderRequest = {
       shippingInfo,
       orderItems: cartItems,
-      subTotal,
+      subtotal: subTotal,
       tax,
       discount,
       shippingCharges,
